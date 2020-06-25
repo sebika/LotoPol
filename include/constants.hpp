@@ -2,9 +2,10 @@
 #define _CONSTANTS
 
 #include <bits/stdc++.h>
-using namespace std;
 
 #define MAX_NUMBER 80
 #define NUMBERS_PER_DRAW 20
+#define EMPTY -1
+#define BIG_DELAY 10000000
 
 #endif

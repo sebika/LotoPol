@@ -1,17 +1,19 @@
 #include "include/utils.hpp"
 
-/*
-    Updates the corresponding file
 
+Node *newNode(int key);
+bool cmp_nodes(Node *a, Node *b);
+int find_delay(Node *root, vector<int> numbers);
+
+
+/*
     Generate all combinations of NUMBERS_PER_DRAW taken `k` to find
     all delays for every set of numbers that were in atleast one draw.
 */
 void updateDatabaseInfo(vector<vector<int>> draws, int k) {
-
     vector<bool> v(NUMBERS_PER_DRAW);
     vector<vector<int>> combinations;
-    Map delays;
-    Map::iterator it;
+    Node *root = newNode(EMPTY);
 
     string output_filename = "delays/" + to_string(k) + ':' + to_string(k);
     ofstream out;
@@ -32,35 +34,75 @@ void updateDatabaseInfo(vector<vector<int>> draws, int k) {
     int number_of_draws = draws.size();
     for (int i = 0; i < number_of_draws; ++i) {
         int no_comb = combinations.size();
-        for (int current_comb = 0; current_comb < no_comb; ++current_comb) {
-            /* 
-                Compute the key for the map
-                Every number has 2 digits (for memory purposes)
-                The key has the following format:
-                    Eg: for the numbers 01 13 15 17 -> key = "01131517"
-            */
-            char* key = (char *)malloc(sizeof(char)*k*2);
-            int key_len = 0;
-            for (int j = 0; j < k; ++j) {
-                int chosen_number = draws[i][combinations[current_comb][j]];
-                // First digit
-                key[key_len++] = chosen_number / 10 + 48;
-                // Second digit
-                key[key_len++] = chosen_number % 10 + 48;
-            }
-            // Add terminator at the end of the string
-            key[key_len] = 0;
+        if (i % 1000 == 0) cout << i << endl;
 
-            // Update the map if the current key doesn't exist
-            auto it = delays.find(key);
-            if (it == delays.end()) {
-                delays[key] = i;
-                out << key << " " << i << endl;
+        for (int current_comb = 0; current_comb < no_comb; ++current_comb) {
+            // The current node
+            Node *current_node = root;
+            for (int j = 0; j < k; ++j) {
+                int current_number = draws[i][combinations[current_comb][j]];
+
+                // Find the current number through the children of the current_node
+                int found = -1;
+                int no_children = current_node->children.size();
+                for (int child = 0; child < no_children; ++child) {
+                    if (current_node->children[child]->key == current_number) {
+                        found = child;
+                        break;
+                    }
+                }
+
+                if (found == -1) {
+                    // Insert the key if it is not found
+                    Node *new_node = newNode(current_number);
+                    current_node->children.push_back(new_node);
+                    current_node = new_node;
+                }
+                else {
+                    // Insert the key if it is not found
+                    current_node = current_node->children[found];
+                }
+
+                // Update the delay if that is the case
+                current_node->delay = (current_node->delay < i) ? current_node->delay : i;
             }
-            else
-                free(key);
         }
     }
+
+    cout << find_delay(root, {34,58,63,75}) << endl;
+}
+
+bool cmp_nodes(Node *a, Node *b)
+{
+   return (a->key < b->key);
+}
+
+// Utility function to create a new tree node 
+Node *newNode(int key) 
+{ 
+   Node *temp = new Node;
+   temp->key = key;
+   temp->delay = BIG_DELAY;
+   return temp;
+}
+
+int find_delay(Node *root, vector<int> numbers) {
+    int n = numbers.size();
+    Node* current_node = root;
+    for (int i = 0; i < n; ++i) {
+        bool found = 0;
+        int no_children = current_node->children.size();
+        for (int j = 0; j < no_children; ++j) {
+            if (current_node->children[j]->key == numbers[i]) {
+                found = true;
+                current_node = current_node->children[j];
+                break;
+            }
+        }
+        if(!found)
+            return -1;
+    }
+    return current_node->delay;
 }
 
 vector<vector<int>> readDatabase(const char* filename) {

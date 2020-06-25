@@ -14,7 +14,7 @@ int main() {
     cout << "===== You want to update delays/" << k << ":" << k << " file? =====  [yes/no]: ";
     cin >> response;
 
-    if (strncmp(response, "yes", 3) == 0) {
+    if (strncmp(response, "yes", 3) == 0 || strncmp(response, "y", 1) == 0) {
         updateDatabaseInfo(draws, k);
         cout << "===== File delays/" << k << ":" << k << " updated =====\n";
     }    
