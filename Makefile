@@ -1,7 +1,7 @@
 CC = g++
-CFLAGS = -Wall -Wextra -g -O3
+CFLAGS = -Wall -g -O3
 
-SOURCES = main.cpp reader.cpp utils.cpp
+SOURCES = main.cpp utils.cpp
 EXECUTABLE = exec
 INCLPATHS = include
 OBJECTS = $(SOURCES:.c=.o)
