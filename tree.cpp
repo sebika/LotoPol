@@ -20,13 +20,17 @@ Node *newNode(int key, int value)
 
     @param: the draws from the database
     @param: depth of the tree
+    @param: if you have a partial tree you can use it
+    @param: use number_of_draws from database
     @return: the root of the tree
 */
-Node* createTreeFromDatabase(const vector<vector<int>> &draws, int k)
+Node* createTreeFromDatabase(const vector<vector<int>> &draws, int k,
+                            Node *root, int number_of_draws)
 {
     vector<bool> v(NUMBERS_PER_DRAW);
     vector<vector<int>> combinations;
-    Node *root = newNode(EMPTY, BIG_DELAY);
+    if (root == NULL)
+        root = newNode(EMPTY, BIG_DELAY);
 
     fill(v.begin(), v.begin()+k, true);
     do {
@@ -42,7 +46,6 @@ Node* createTreeFromDatabase(const vector<vector<int>> &draws, int k)
     cout << "\n=========\nINFO: Generating tree from database with depth: [" << k << "]\n";
 
     // Iterate through the draws and get the delays
-    int number_of_draws = draws.size();
     for (int i = 0; i < number_of_draws; ++i) {
 
         if (i % 1000 == 0 && i > 0) {
@@ -82,7 +85,34 @@ Node* createTreeFromDatabase(const vector<vector<int>> &draws, int k)
             }
         }
     }
+    cout << "=========\n";
     return root;
+}
+
+/*
+    Wrapper from `createTreeFromDatabase` which creates a tree from scratch
+
+    @param: the draws from the database
+    @param: depth of the tree
+    @return: the root of the tree
+*/
+Node* createTree(const vector<vector<int>> &draws, int k)
+{
+    return createTreeFromDatabase(draws, k, NULL, draws.size());
+}
+
+/*
+    Wrapper from `createTreeFromDatabase` which updates an existent tree
+
+    @param: the draws from the database
+    @param: depth of the tree
+    @param: if you have a partial tree you can use it
+    @param: use number_of_draws from database
+    @return: the root of the tree
+*/
+Node* updateTree(const vector<vector<int>> &draws, int k, Node *root, int number_of_draws)
+{
+    return createTreeFromDatabase(draws, k, root, number_of_draws);
 }
 
 /*
@@ -118,19 +148,21 @@ int find_delay(Node *root, const vector<int> &numbers)
 
     @param: the root of the tree
     @param: the file pointer
+    @param: offset is useful for delays in case you update an existing tree
 */
-void serialize(Node *root, FILE *fp)
+void serialize(Node *root, FILE *fp, int offset)
 {
     // Base case
     if (root == NULL)
         return;
 
+    if (root->value >= offset) root->value += offset;
 
     // Else, store current node and recur for its children
     int no_children = root->children.size();
     fprintf(fp, "%d %d ", root->key, root->value);
     for (int i = 0; i < no_children; i++)
-        serialize(root->children[i],  fp);
+        serialize(root->children[i], fp, offset);
 
     // Store marker at the end of children
     fprintf(fp, "%d ", MARKER);
@@ -141,15 +173,16 @@ void serialize(Node *root, FILE *fp)
 
     @param: the root of the tree
     @param: the file pointer
+    @param: offset is useful for delays in case you update an existing tree
 */
-void serialize_tree_to_file(Node *root, const char *filename)
+void serialize_tree_to_file(Node *root, const char *filename, int offset)
 {
     FILE *fp;
     fp = fopen(filename, "w");
     if (fp == NULL) perror("CRITICAL: Error opening the file or creating it\n");
     else {
         cout << "\n=========\nINFO: Serializing the tree to: " << filename << endl;
-        serialize(root, fp);
+        serialize(root, fp, offset);
         cout << "INFO: Done!\nINFO: Closing the file\n=========\n";
         fclose(fp);
     }
@@ -201,15 +234,18 @@ void deSerialize(Node *&root, FILE *fp)
     @param: the root where the tree will be saved
     @param: the file pointer
 */
-void deSerialize_tree_from_file(Node *&root, const char *filename)
+Node* deSerialize_tree_from_file(const char *filename)
 {
     FILE *fp;
+    Node *root = NULL;
     fp = fopen(filename, "r");
     if (fp == NULL) perror("CRITICAL: Error opening the file\n");
     else {
         cout << "\n=========\nINFO: Deserializing the tree\n";
+
         deSerialize(root, fp);
         cout << "INFO: Done!\nINFO: Closing the file\n=========\n";
         fclose(fp);
     }
+    return root;
 }
