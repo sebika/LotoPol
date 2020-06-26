@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall -O3
+CFLAGS = -O3
 
 SOURCES = main.cpp utils.cpp tree.cpp handler.cpp
 EXECUTABLE = exec

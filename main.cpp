@@ -2,11 +2,14 @@
 #include "include/utils.hpp"
 #include "include/tree.hpp"
 #include "include/handler.hpp"
+#include "include/randutils.hpp"
+
+randutils::mt19937_rng rng;
 
 using namespace std;
 int main(int argc, char** argv) {
 
-    srand(time(NULL));
+    //mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
     // Read info from database
     vector<vector<int>> draws;
@@ -42,6 +45,8 @@ int main(int argc, char** argv) {
         numbers = generateNumbers(total_numbers);
         number_of_tries ++;
 
+        //printVect(numbers);
+
         int min_delay = BIG_DELAY;
         for (int comb = 0; comb < no_combinations; ++comb) {
             chosen_number_size = 0;
@@ -62,7 +67,10 @@ int main(int argc, char** argv) {
             printVect(numbers);
         }
 
-        if (number_of_tries % 10000000 == 0) cout << "*\n";
+        if (number_of_tries % 10000000 == 0) {
+            srand(time(NULL));
+            cout << "*\n";
+        }
     }
 
     return 0;

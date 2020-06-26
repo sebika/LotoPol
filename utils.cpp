@@ -1,4 +1,7 @@
 #include "include/utils.hpp"
+#include "include/randutils.hpp"
+
+extern randutils::mt19937_rng rng;
 
 /*
     @param: the filename
@@ -127,10 +130,11 @@ vector<vector<int>> generateCombinations(const int n, const int k) {
 
 */
 vector<int> generateNumbers(int howMany) {
+
     vector<int> numbers(howMany, 0);
     int size = 0;
     while (size < howMany) {
-        int number = (unsigned int)rand() % MAX_NUMBER + 1;
+        int number = rng.uniform(1,MAX_NUMBER);
         bool different = true;
         for (int i = 0; i < size; ++i)
             if (numbers[i] == number) {
