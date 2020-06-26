@@ -2,12 +2,15 @@
 
 /*
     Utility function to create a new tree node
+
+    @param: key represents the number
+    @param: val represents the value stored in the number
 */
-Node *newNode(int key, int delay)
+Node *newNode(int key, int value)
 {
    Node *temp = new Node;
    temp->key = key;
-   temp->delay = delay;
+   temp->value = value;
    return temp;
 }
 
@@ -36,12 +39,17 @@ Node* createTreeFromDatabase(const vector<vector<int>> &draws, int k)
         combinations.push_back(indices);
     } while (prev_permutation(v.begin(), v.end()));
 
+    cout << "\n=========\nINFO: Generating tree from database with depth: [" << k << "]\n";
+
     // Iterate through the draws and get the delays
     int number_of_draws = draws.size();
     for (int i = 0; i < number_of_draws; ++i) {
-        int no_comb = combinations.size();
-        if (i % 1000 == 0) cout << i << endl;
 
+        if (i % 1000 == 0 && i > 0) {
+            cout << " -> Done " << i << " lines\n";
+        }
+
+        int no_comb = combinations.size();
         for (int current_comb = 0; current_comb < no_comb; ++current_comb) {
             // The current node
             Node *current_node = root;
@@ -70,7 +78,7 @@ Node* createTreeFromDatabase(const vector<vector<int>> &draws, int k)
                 }
 
                 // Update the delay if that is the case
-                current_node->delay = (current_node->delay < i) ? current_node->delay : i;
+                current_node->value = (current_node->value < i) ? current_node->value : i;
             }
         }
     }
@@ -102,7 +110,7 @@ int find_delay(Node *root, const vector<int> &numbers)
         if(!found)
             return -1;
     }
-    return current_node->delay;
+    return current_node->value;
 }
 
 /*
@@ -120,7 +128,7 @@ void serialize(Node *root, FILE *fp)
 
     // Else, store current node and recur for its children
     int no_children = root->children.size();
-    fprintf(fp, "%d %d ", root->key, root->delay);
+    fprintf(fp, "%d %d ", root->key, root->value);
     for (int i = 0; i < no_children; i++)
         serialize(root->children[i],  fp);
 
@@ -140,9 +148,9 @@ void serialize_tree_to_file(Node *root, const char *filename)
     fp = fopen(filename, "w");
     if (fp == NULL) perror("CRITICAL: Error opening the file or creating it\n");
     else {
-        cout << "INFO: Serializing the tree to: " << filename << endl;
+        cout << "\n=========\nINFO: Serializing the tree to: " << filename << endl;
         serialize(root, fp);
-        cout << "INFO: Done!\nINFO: Closing the file\n";
+        cout << "INFO: Done!\nINFO: Closing the file\n=========\n";
         fclose(fp);
     }
 }
@@ -199,9 +207,9 @@ void deSerialize_tree_from_file(Node *&root, const char *filename)
     fp = fopen(filename, "r");
     if (fp == NULL) perror("CRITICAL: Error opening the file\n");
     else {
-        cout << "INFO: deSerializing the tree\n";
+        cout << "\n=========\nINFO: Deserializing the tree\n";
         deSerialize(root, fp);
-        cout << "INFO: Done!\nINFO: Closing the file\n";
+        cout << "INFO: Done!\nINFO: Closing the file\n=========\n";
         fclose(fp);
     }
 }

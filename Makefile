@@ -14,6 +14,5 @@ run: exec
 
 clean:
 	rm -rf $(EXECUTABLE)
-	rm -rf main.o
 
 .PHONY: clean build run

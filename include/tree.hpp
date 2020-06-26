@@ -9,7 +9,7 @@ using namespace std;
 struct Node
 {
    int key;
-   int delay;
+   int value;
    vector<Node *>children;
 };
 

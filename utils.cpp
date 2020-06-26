@@ -5,9 +5,10 @@ vector<vector<int>> readDatabase(const char* filename) {
     ifstream fin;
     fin.open(filename);
     if (!fin) {
-        perror("\n=== Cannot open the requested file ===\n");
+        perror("CRITICAL: Cannot open the requested file\n");
     }
     else {
+        cout << "\n=========\nINFO: Reading database\n";
         int number;
         while (fin >> number) {
             vector<int> row;
@@ -18,6 +19,7 @@ vector<vector<int>> readDatabase(const char* filename) {
             }
             draws.push_back(row);
         }
+        cout << "INFO: Done!\nINFO: Closing the file\n=========\n";
     }
     fin.close();
     return draws;
