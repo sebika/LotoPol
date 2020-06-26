@@ -1,15 +1,15 @@
 DEPTH = 5
 
 CC = g++
-CFLAGS = -Wall -O3 -g
+CFLAGS = -Wall -O3
 
-SOURCES = main.cpp utils.cpp tree.cpp
+SOURCES = main.cpp utils.cpp tree.cpp handler.cpp
 EXECUTABLE = exec
 INCLPATHS = include
 OBJECTS = $(SOURCES:.c=.o)
 
-build: $(OBJECTS)
-	$(CC) $^ -o $(EXECUTABLE) $(CFLAGS)
+run: build
+	./$(EXECUTABLE)
 
 createTree: build
 	./exec create $(DEPTH)
@@ -17,8 +17,8 @@ createTree: build
 updateTree: build
 	./exec update $(DEPTH)
 
-run: $(EXECUTABLE)
-	./$(EXECUTABLE)
+build: $(OBJECTS)
+	$(CC) $^ -o $(EXECUTABLE) $(CFLAGS)
 
 clean:
 	rm -rf $(EXECUTABLE)
