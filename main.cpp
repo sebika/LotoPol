@@ -1,23 +1,19 @@
 #include "include/constants.hpp"
 #include "include/utils.hpp"
+#include "include/tree.hpp"
 
 using namespace std;
 int main() {
 
     vector<vector<int>> draws;
-    draws = readDatabase("database");
+    draws = readDatabase("input/database");
 
-    int k;
-    char response[10];
-    cout << "-> k = ";
-    cin >> k;
-    cout << "===== You want to update delays/" << k << ":" << k << " file? =====  [yes/no]: ";
-    cin >> response;
+    Node *root = createTreeFromDatabase(draws, 5);
+    serialize_tree_to_file(root, "output/tree");
 
-    if (strncmp(response, "yes", 3) == 0 || strncmp(response, "y", 1) == 0) {
-        updateDatabaseInfo(draws, k);
-        cout << "===== File delays/" << k << ":" << k << " updated =====\n";
-    }    
+    root = NULL;
+    deSerialize_tree_from_file(root, "output/tree");
+    cout << find_delay(root, {04,55,58}) << endl;
 
     return 0;
 }

@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS = -Wall -O3
 
-SOURCES = main.cpp utils.cpp
+SOURCES = main.cpp utils.cpp tree.cpp
 EXECUTABLE = exec
 INCLPATHS = include
 OBJECTS = $(SOURCES:.c=.o)
