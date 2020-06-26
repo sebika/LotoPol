@@ -27,21 +27,11 @@ Node *newNode(int key, int value)
 Node* createTreeFromDatabase(const vector<vector<int>> &draws, int k,
                             Node *root, int number_of_draws)
 {
-    vector<bool> v(NUMBERS_PER_DRAW);
-    vector<vector<int>> combinations;
     if (root == NULL)
         root = newNode(EMPTY, BIG_DELAY);
 
-    fill(v.begin(), v.begin()+k, true);
-    do {
-        // Generate the combination and save the result in `combinations`
-        vector<int> indices;
-        for (int i = 0; i < NUMBERS_PER_DRAW; ++i)
-            if (v[i]) {
-                indices.push_back(i);
-            }
-        combinations.push_back(indices);
-    } while (prev_permutation(v.begin(), v.end()));
+    vector<vector<int>> combinations;
+    combinations = generateCombinations(NUMBERS_PER_DRAW, k);
 
     cout << "\n=========\nINFO: Generating tree from database with depth: [" << k << "]\n";
 
@@ -54,6 +44,12 @@ Node* createTreeFromDatabase(const vector<vector<int>> &draws, int k,
 
         int no_comb = combinations.size();
         for (int current_comb = 0; current_comb < no_comb; ++current_comb) {
+            if (combinations[current_comb][0] == 11 && combinations[current_comb][1] == 17)
+            {
+                no_comb ++;
+                no_comb --;
+            }
+
             // The current node
             Node *current_node = root;
             for (int j = 0; j < k; ++j) {
@@ -242,7 +238,6 @@ Node* deSerialize_tree_from_file(const char *filename)
     if (fp == NULL) perror("CRITICAL: Error opening the file\n");
     else {
         cout << "\n=========\nINFO: Deserializing the tree\n";
-
         deSerialize(root, fp);
         cout << "INFO: Done!\nINFO: Closing the file\n=========\n";
         fclose(fp);

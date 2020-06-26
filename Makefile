@@ -1,5 +1,3 @@
-DEPTH = 5
-
 CC = g++
 CFLAGS = -Wall -O3
 
@@ -11,11 +9,11 @@ OBJECTS = $(SOURCES:.c=.o)
 run: build
 	./$(EXECUTABLE)
 
-createTree: build
-	./exec create $(DEPTH)
+createTrees: build
+	./exec create
 
-updateTree: build
-	./exec update $(DEPTH)
+updateTrees: build
+	./exec update
 
 build: $(OBJECTS)
 	$(CC) $^ -o $(EXECUTABLE) $(CFLAGS)

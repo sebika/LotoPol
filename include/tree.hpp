@@ -3,6 +3,7 @@
 
 #include <bits/stdc++.h>
 #include "constants.hpp"
+#include "utils.hpp"
 using namespace std;
 
 // Represents a node of an n-ary tree

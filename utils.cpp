@@ -67,3 +67,89 @@ void updateDatabase(const char* filename,
         cout << "INFO: Done. Closing file\n";
     }
 }
+
+/*
+    Reads a 2 digit number
+    @param: display the prompt before you read
+    @return: the number
+*/
+int readInt(const char *prompt) {
+    char buf[100];
+    cout << " -> " << prompt;
+    while(1) {
+        cin >> buf;
+        if(strlen(buf) == 1 && buf[0] > '0' && buf[0] <= '9')
+            return buf[0]-48;
+        if(strlen(buf) == 2 &&
+          buf[0] >= '0' && buf[0] <= '9' &&
+          buf[1] >= '0' && buf[1] <= '9')
+            return (buf[0]-48)*10 + buf[1]-48;
+        cout << " ! Please enter a 2 digit number. (preferred <= 10)\n -> " << prompt;
+    }
+}
+
+
+/*
+    Reads the desired input and stores the result
+    in the parameters
+*/
+void readInput(int *total_numbers, int *at_least) {
+    cout << "Enter a 2 digit number. (preferred <= 10)\n";
+    (*total_numbers) = readInt("total_numbers = ");
+    (*at_least) = readInt("at_least = ");
+    while ((*at_least) > (*total_numbers)) {
+        cout << " ! at_least should be <= total_numbers\n";
+        (*at_least) = readInt("at_least = ");
+    }
+}
+
+vector<vector<int>> generateCombinations(const int n, const int k) {
+    vector<bool> v(n);
+    vector<vector<int>> combinations;
+
+    fill(v.begin(), v.begin()+k, true);
+    do {
+        // Generate the combination and save the result in `combinations`
+        vector<int> indices;
+        for (int i = 0; i < NUMBERS_PER_DRAW; ++i)
+            if (v[i]) {
+                indices.push_back(i);
+            }
+        combinations.push_back(indices);
+    } while (prev_permutation(v.begin(), v.end()));
+    return combinations;
+}
+
+/*
+    Generate distinct pseudo-random numbers between 1 and MAX_NUMBER
+    Numbers are generated in ascending order
+    @param: howMany numbers you want to generate
+
+*/
+vector<int> generateNumbers(int howMany) {
+    vector<int> numbers(howMany, 0);
+    int size = 0;
+    while (size < howMany) {
+        int number = (unsigned int)rand() % MAX_NUMBER + 1;
+        bool different = true;
+        for (int i = 0; i < size; ++i)
+            if (numbers[i] == number) {
+                different = false;
+                break;
+            }
+        if (different)
+            numbers[size++] = number;
+    }
+    sort(numbers.begin(), numbers.end());
+    return numbers;
+}
+
+/*
+    Prints a vector
+*/
+void printVect(const vector<int> &vect) {
+    int n = vect.size();
+    for (int i = 0; i < n; ++i)
+        cout << vect[i] << " ";
+    cout << endl;
+}
