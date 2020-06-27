@@ -2,7 +2,7 @@
 
 ### Create a tree from database with:
 ```sh
-$ make createTree
+$ make createTrees
 ```
 
 ### Update the tree:
@@ -10,7 +10,7 @@ $ make createTree
 - add **new draws** to `input/update` file
 - the program will update the existing `database` and remove the contents of the `update` file
 ```sh
-$ make updateTree
+$ make updateTrees
 ```
 
 ### To simply run the program:
