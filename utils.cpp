@@ -144,7 +144,14 @@ vector<int> generateNumbers(int howMany) {
         if (different)
             numbers[size++] = number;
     }
-    sort(numbers.begin(), numbers.end());
+    sort(numbers.begin(), numbers.end    ());
+
+    // numbers[size++] = rng.uniform(1, MAX_NUMBER);
+    // while (size < howMany) {
+    //     numbers[size] = rng.uniform(numbers[size-1]+1, MAX_NUMBER);
+    //     size++;
+    // }
+
     return numbers;
 }
 

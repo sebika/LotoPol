@@ -37,26 +37,22 @@ int main(int argc, char** argv) {
 
     vector<int> numbers(total_numbers, -1);
     vector<int> chosen_numbers(at_least, -1);
-    int chosen_number_size, number_of_tries = 0;
+    int chosen_number_size;
 
     int best_delay = -1;
     while (1) {
         // Find possible candidates
         numbers = generateNumbers(total_numbers);
-        number_of_tries ++;
-
-        //printVect(numbers);
 
         int min_delay = BIG_DELAY;
         for (int comb = 0; comb < no_combinations; ++comb) {
             chosen_number_size = 0;
-
             for (int i = 0; i < at_least; ++i)
                 chosen_numbers[chosen_number_size++] = numbers[combinations[comb][i]];
 
             int delay = find_delay(root, chosen_numbers);
-            min_delay = (min_delay < delay) ? min_delay : delay;
 
+            min_delay = (min_delay < delay) ? min_delay : delay;
             if (min_delay < best_delay) break;
         }
 
@@ -65,11 +61,6 @@ int main(int argc, char** argv) {
             best_delay = min_delay;
             cout << best_delay << " -> ";
             printVect(numbers);
-        }
-
-        if (number_of_tries % 10000000 == 0) {
-            srand(time(NULL));
-            cout << "*\n";
         }
     }
 
